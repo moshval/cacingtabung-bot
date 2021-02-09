@@ -1,5 +1,29 @@
-# Java starter bot
+# CacingTabung Bot
 
+
+## Note :
+Cara run taruh repo ini di directory starter-pack trus ubah game-runner-config-json jadi :
+'''
+{
+  "round-state-output-location": "./match-logs",
+  "game-config-file-location": "game-config.json",
+  "game-engine-jar": "./ec-2019-game-engine-jvm-full-2019.3.2.jar",
+  "verbose-mode": true,
+  "max-runtime-ms": 1000,
+  "player-a": "./cacingtabung-bot",
+  "player-b": "./reference-bot/javascript",
+  "max-request-retries": 10,
+  "request-timeout-ms": 5000,
+  "is-tournament-mode": false,
+  "tournament": {
+    "connection-string": "",
+    "bots-container": "",
+    "match-logs-container": "",
+    "game-engine-container": "",
+    "api-endpoint": "http://localhost"
+  }
+}
+'''
 ## Environment requirements
 
 Install the Java SE Development Kit 8 for your environment here: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
