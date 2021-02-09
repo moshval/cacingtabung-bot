@@ -3,7 +3,7 @@
 
 ## Note :
 Cara run taruh repo ini di directory starter-pack trus ubah game-runner-config-json jadi :
-'''
+```
 {
   "round-state-output-location": "./match-logs",
   "game-config-file-location": "game-config.json",
@@ -23,7 +23,7 @@ Cara run taruh repo ini di directory starter-pack trus ubah game-runner-config-j
     "api-endpoint": "http://localhost"
   }
 }
-'''
+```
 ## Environment requirements
 
 Install the Java SE Development Kit 8 for your environment here: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
