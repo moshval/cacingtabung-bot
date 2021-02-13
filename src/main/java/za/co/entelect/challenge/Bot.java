@@ -1,3 +1,16 @@
+/* Kelompok Cacing Tabung 
+    13519018 - Mohammad Sheva Almeyda Sofjan (K1)
+    13519069 - Muhammad Fikri N. (K2)
+    13519091 - Mohammad Yahya Ibrahim (K2)
+
+    Tugas Besar 1 IF2211 Strategi Algoritma
+    Penerapan Algoritma Greedy - Entelect Challenge 2019 "Worms"
+
+*/
+
+
+
+
 package za.co.entelect.challenge;
 
 import za.co.entelect.challenge.command.*;
