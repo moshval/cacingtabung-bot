@@ -48,20 +48,12 @@ public class Bot {
         int cellIdx;
         Cell block;
 
-        if(currentWorm.id == 1){
+        // Run case tergantung jenis worm
+        if(currentWorm.id == 1){  // 
             enemyWorm = getFirstWormInRange();
             if (enemyWorm != null) {
                 direction = resolveDirection(currentWorm.position, enemyWorm.position);
                 return new ShootCommand(direction);
-            }
-            surroundingBlocks = getSurroundingCells(currentWorm.position.x, currentWorm.position.y);
-            cellIdx = random.nextInt(surroundingBlocks.size());
-    
-            block = surroundingBlocks.get(cellIdx);
-            if (block.type == CellType.AIR) {
-                return new MoveCommand(block.x, block.y);
-            } else if (block.type == CellType.DIRT) {
-                return new DigCommand(block.x, block.y);
             }
 
         }
@@ -74,16 +66,6 @@ public class Bot {
             if (enemyWorm != null) {  // Musuh di range shoot general weapon
                 direction = resolveDirection(currentWorm.position, enemyWorm.position);
                 return new ShootCommand(direction);
-            }
-                
-            surroundingBlocks = getSurroundingCells(currentWorm.position.x, currentWorm.position.y);
-            cellIdx = random.nextInt(surroundingBlocks.size());
-    
-            block = surroundingBlocks.get(cellIdx);
-            if (block.type == CellType.AIR) {
-                return new MoveCommand(block.x, block.y);
-            } else if (block.type == CellType.DIRT) {
-                return new DigCommand(block.x, block.y);
             }
 
         }
@@ -98,18 +80,19 @@ public class Bot {
                 direction = resolveDirection(currentWorm.position, enemyWorm.position);
                 return new ShootCommand(direction);
             }
-                
-            surroundingBlocks = getSurroundingCells(currentWorm.position.x, currentWorm.position.y);
-            cellIdx = random.nextInt(surroundingBlocks.size());
-    
-            block = surroundingBlocks.get(cellIdx);
-            if (block.type == CellType.AIR) {
-                return new MoveCommand(block.x, block.y);
-            } else if (block.type == CellType.DIRT) {
-                return new DigCommand(block.x, block.y);
-            }
 
         }
+
+        surroundingBlocks = getSurroundingCells(currentWorm.position.x, currentWorm.position.y);
+        cellIdx = random.nextInt(surroundingBlocks.size());
+
+        block = surroundingBlocks.get(cellIdx);
+        if (block.type == CellType.AIR) {
+            return new MoveCommand(block.x, block.y);
+        } else if (block.type == CellType.DIRT) {
+            return new DigCommand(block.x, block.y);
+        }
+
         return new DoNothingCommand();
 
     }
