@@ -1,17 +1,17 @@
 package za.co.entelect.challenge.command;
 
-import za.co.entelect.challenge.enums.Direction;
-
 public class BananaCommand implements Command {
 
-    private Direction direction;
+    private final int x;
+    private final int y;
 
-    public BananaCommand(Direction direction) {
-        this.direction = direction;
+    public BananaCommand(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
     @Override
     public String render() {
-        return String.format("banana %s", direction.name());
+        return String.format("banana %d %d", x, y);
     }
 }

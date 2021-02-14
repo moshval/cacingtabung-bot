@@ -1,17 +1,17 @@
 package za.co.entelect.challenge.command;
 
-import za.co.entelect.challenge.enums.Direction;
-
 public class SnowballCommand implements Command {
 
-    private Direction direction;
+    private final int x;
+    private final int y;
 
-    public SnowballCommand(Direction direction) {
-        this.direction = direction;
+    public SnowballCommand(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
     @Override
     public String render() {
-        return String.format("snowball %s", direction.name());
+        return String.format("snowball %d %d", x, y);
     }
 }

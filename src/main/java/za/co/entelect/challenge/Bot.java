@@ -8,9 +8,6 @@
 
 */
 
-
-
-
 package za.co.entelect.challenge;
 
 import za.co.entelect.challenge.command.*;
@@ -35,6 +32,7 @@ public class Bot {
         this.currentWorm = getCurrentWorm(gameState);
     }
 
+    // Getter Worm
     private MyWorm getCurrentWorm(GameState gameState) {
         return Arrays.stream(gameState.myPlayer.worms)
                 .filter(myWorm -> myWorm.id == gameState.currentWormId)
@@ -42,27 +40,82 @@ public class Bot {
                 .get();
     }
 
+    // Method buat run
     public Command run() {
+        Worm enemyWorm;
+        Direction direction;
+        List<Cell> surroundingBlocks;
+        int cellIdx;
+        Cell block;
 
-        Worm enemyWorm = getFirstWormInRange();
-        if (enemyWorm != null) {
-            Direction direction = resolveDirection(currentWorm.position, enemyWorm.position);
-            return new ShootCommand(direction);
+        if(currentWorm.id == 1){
+            enemyWorm = getFirstWormInRange();
+            if (enemyWorm != null) {
+                direction = resolveDirection(currentWorm.position, enemyWorm.position);
+                return new ShootCommand(direction);
+            }
+            surroundingBlocks = getSurroundingCells(currentWorm.position.x, currentWorm.position.y);
+            cellIdx = random.nextInt(surroundingBlocks.size());
+    
+            block = surroundingBlocks.get(cellIdx);
+            if (block.type == CellType.AIR) {
+                return new MoveCommand(block.x, block.y);
+            } else if (block.type == CellType.DIRT) {
+                return new DigCommand(block.x, block.y);
+            }
+
+        }
+        else if(currentWorm.id == 2){
+            enemyWorm = getFirstWormInBananaRange();
+            if (enemyWorm != null && currentWorm.bananaBombs.count > 0) { // Kalo musuh di range banana bomb dan count bomb > 0 berarti do command bananabomb
+                return new BananaCommand(enemyWorm.position.x,enemyWorm.position.y);
+            }
+            enemyWorm = getFirstWormInRange();
+            if (enemyWorm != null) {  // Musuh di range shoot general weapon
+                direction = resolveDirection(currentWorm.position, enemyWorm.position);
+                return new ShootCommand(direction);
+            }
+                
+            surroundingBlocks = getSurroundingCells(currentWorm.position.x, currentWorm.position.y);
+            cellIdx = random.nextInt(surroundingBlocks.size());
+    
+            block = surroundingBlocks.get(cellIdx);
+            if (block.type == CellType.AIR) {
+                return new MoveCommand(block.x, block.y);
+            } else if (block.type == CellType.DIRT) {
+                return new DigCommand(block.x, block.y);
+            }
+
         }
 
-        List<Cell> surroundingBlocks = getSurroundingCells(currentWorm.position.x, currentWorm.position.y);
-        int cellIdx = random.nextInt(surroundingBlocks.size());
+        else if(currentWorm.id == 3){
+            enemyWorm = getFirstWormInSnowballRange();
+            if (enemyWorm != null && currentWorm.snowballs.count > 0 && enemyWorm.roundsUntilUnfrozen == 0) { // Kalo musuh di range snowballsb dan count snowballs > 0 berarti do command snowballs
+                return new SnowballCommand(enemyWorm.position.x,enemyWorm.position.y);
+            }
+            enemyWorm = getFirstWormInRange();
+            if (enemyWorm != null) {  // Musuh di range shoot general weapon
+                direction = resolveDirection(currentWorm.position, enemyWorm.position);
+                return new ShootCommand(direction);
+            }
+                
+            surroundingBlocks = getSurroundingCells(currentWorm.position.x, currentWorm.position.y);
+            cellIdx = random.nextInt(surroundingBlocks.size());
+    
+            block = surroundingBlocks.get(cellIdx);
+            if (block.type == CellType.AIR) {
+                return new MoveCommand(block.x, block.y);
+            } else if (block.type == CellType.DIRT) {
+                return new DigCommand(block.x, block.y);
+            }
 
-        Cell block = surroundingBlocks.get(cellIdx);
-        if (block.type == CellType.AIR) {
-            return new MoveCommand(block.x, block.y);
-        } else if (block.type == CellType.DIRT) {
-            return new DigCommand(block.x, block.y);
         }
-
         return new DoNothingCommand();
+
     }
 
+
+    // Cek Ada nearby enemy worm dalam shooting range, mereturn detail worm enemy
     private Worm getFirstWormInRange() {
 
         Set<String> cells = constructFireDirectionLines(currentWorm.weapon.range)
@@ -81,6 +134,7 @@ public class Bot {
         return null;
     }
 
+    // Shooting line
     private List<List<Cell>> constructFireDirectionLines(int range) {
         List<List<Cell>> directionLines = new ArrayList<>();
         for (Direction direction : Direction.values()) {
@@ -111,11 +165,12 @@ public class Bot {
         return directionLines;
     }
 
+    // Buat tau cell2 apa aja yg ada disekitar, dari info gamestate
     private List<Cell> getSurroundingCells(int x, int y) {
         ArrayList<Cell> cells = new ArrayList<>();
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
-                // Don't include the current position
+                // Gak include current position
                 if (i != x && j != y && isValidCoordinate(i, j)) {
                     cells.add(gameState.map[j][i]);
                 }
@@ -125,15 +180,17 @@ public class Bot {
         return cells;
     }
 
+    // Calculate Distance (euclidean)
     private int euclideanDistance(int aX, int aY, int bX, int bY) {
         return (int) (Math.sqrt(Math.pow(aX - bX, 2) + Math.pow(aY - bY, 2)));
     }
-
+    // Checker validity koordinat
     private boolean isValidCoordinate(int x, int y) {
         return x >= 0 && x < gameState.mapSize
                 && y >= 0 && y < gameState.mapSize;
     }
 
+    // Arah
     private Direction resolveDirection(Position a, Position b) {
         StringBuilder builder = new StringBuilder();
 
@@ -154,4 +211,32 @@ public class Bot {
 
         return Direction.valueOf(builder.toString());
     }
+
+    // Cek Ada nearby enemy worm dalam snowball throwing range, mereturn detail worm enemy
+    private Worm getFirstWormInSnowballRange() {
+        int distance;
+        for (Worm enemyWorm : opponent.worms) {
+            distance = euclideanDistance(currentWorm.position.x, currentWorm.position.y, enemyWorm.position.x, enemyWorm.position.y);
+            if(distance <= currentWorm.snowballs.range && distance > currentWorm.snowballs.freezeRadius*Math.sqrt(2)){
+                return enemyWorm;
+            }
+        }
+
+        return null;
+    }
+
+    // Cek Ada nearby enemy worm dalam banana throwing range, mereturn detail worm enemy
+    private Worm getFirstWormInBananaRange() {
+        int distance;
+        for (Worm enemyWorm : opponent.worms) {
+            distance = euclideanDistance(currentWorm.position.x, currentWorm.position.y, enemyWorm.position.x, enemyWorm.position.y);
+            if(distance <= currentWorm.bananaBombs.range && distance > currentWorm.bananaBombs.damageRadius*0.75){
+                return enemyWorm;
+            }
+        }
+
+        return null;
+    }
+    
+    
 }
