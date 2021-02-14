@@ -53,7 +53,7 @@ public class Bot {
             enemyWorm = getFirstWormInRange();
             if (enemyWorm != null) {
                 direction = resolveDirection(currentWorm.position, enemyWorm.position);
-                return new ShootCommand(direction);
+                return new  ShootCommand(direction);
             }
 
         }
