@@ -7,6 +7,8 @@ public enum CellType {
     DEEP_SPACE,
     @SerializedName("DIRT")
     DIRT,
+    @SerializedName("LAVA")
+    LAVA,
     @SerializedName("AIR")
     AIR;
 }
