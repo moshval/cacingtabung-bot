@@ -111,9 +111,9 @@ public class Bot {
                 
             
         }
-        
+
         // Run case tergantung jenis worm
-        if(currentWorm.id == 1){  // Commando
+        else if(currentWorm.id == 1){  // Commando
             enemyWorm = getFirstWormInRange(currentWorm);
             if (enemyWorm != null) {
                 direction = resolveDirection(currentWorm.position, enemyWorm.position);
@@ -147,7 +147,6 @@ public class Bot {
 
         }
 
-        
 
         block = getCell(currentWorm);
         if(block!=null){
@@ -158,6 +157,8 @@ public class Bot {
                 return new MoveCommand(block.x, block.y);
             }
         }
+
+
 
         return new DoNothingCommand();
 
@@ -235,6 +236,7 @@ public class Bot {
                 }
             }
         }
+
 
         return cells;
     }
@@ -403,10 +405,14 @@ public class Bot {
         List<Cell> surroundingBlocks;
         int cellIdx;
         Cell block;
-        int count = 0;
+        int countE = 0;
+        int countF = 0;
         int countEAlive = countEnemyAlive();
+        int CountFAlive = countFriendAlive();
         ArrayList<Position> enemyPos = new ArrayList<Position>();
+        ArrayList<Position> friendPos = new ArrayList<Position>();
         enemyPos = getEnemyPosition();
+        friendPos = getFriendPosition();
         // enemyPos.get(i)= (x,y)
         surroundingBlocks = getSurroundingCells(thisWorm.position.x, thisWorm.position.y);
         //cellIdx = random.nextInt(surroundingBlocks.size()); // Move nya masih random
@@ -422,10 +428,15 @@ public class Bot {
             if (block.type == CellType.AIR){
                 for (int j = 0; j < enemyPos.size(); j++) {
                     if(block.x != enemyPos.get(j).x && block.y != enemyPos.get(j).y){
-                        count++; // mayat msh kehitung            
+                        countE++; // mayat msh kehitung            
                     }
                 }
-                if(count >= countEAlive) {
+                for (int l = 0; l < friendPos.size(); l++) {
+                    if(block.x != friendPos.get(l).x && block.y != friendPos.get(l).y){
+                        countF++;
+                    }                    
+                }
+                if(countE >= countEAlive && countF >= CountFAlive) {
                     return block;
                 }
             }
@@ -437,17 +448,33 @@ public class Bot {
     private ArrayList<Position> getEnemyPosition(){ // get posisi semua musuh (berbentuk arraylist)
         ArrayList<Position> arrWorm = new ArrayList<Position>();
         for (Worm enemyWorm : opponent.worms) {
-            //String enemyPosition = String.format("%d_%d", enemyWorm.position.x, enemyWorm.position.y);
             arrWorm.add(enemyWorm.position);
         }
         return arrWorm;
     }
+
+    private ArrayList<Position> getFriendPosition(){ // get posisi semua friends (berbentuk arraylist)
+        ArrayList<Position> arrWorm = new ArrayList<Position>();
+        for (MyWorm myWorm : currPlayer.worms) {
+            arrWorm.add(myWorm.position);
+        }
+        return arrWorm;
+    }
+
     
     // Mengembalikan jumlah worms enemy yang masih hidup
     private int countEnemyAlive(){
         int count = 0;
         for (Worm enemyWorm : opponent.worms) {
             if(enemyWorm.health > 0) count++;
+        }
+        return count;
+    }
+    // Mengembalikan jumlah worms friends yang masih hidup
+    private int countFriendAlive(){
+        int count = 0;
+        for (MyWorm myWorm : currPlayer.worms) {
+            if(myWorm.health > 0) count++;
         }
         return count;
     }
