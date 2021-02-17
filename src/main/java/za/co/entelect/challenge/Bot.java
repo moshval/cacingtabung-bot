@@ -56,23 +56,27 @@ public class Bot {
         List<Cell> surroundingBlocks;
         int cellIdx;
         Cell block;
-        int tempJarak;
+        int tempJarak,tempHP;
         int jarak = 99999;
         MyWorm allWorm;
         allWorm = null;
+        int MineHP = 99999;  
+        // Buat Select worm yang lagi di range enemy, sorted dari worm yang punya health paling kecil
         if(currPlayer.remainingWormSelections > 0 ){
             enemyWorm = getFirstWormInRange(currentWorm);
             for (MyWorm curWorm : currPlayer.worms){
                 if(curWorm.health > 0 && curWorm != currentWorm){
                     tempEnemy =  getFirstWormInRange(curWorm);
                     if(tempEnemy!=null){
-                        tempJarak = euclideanDistance(curWorm.position.x, curWorm.position.y, tempEnemy.position.x, tempEnemy.position.y);
-                        if(tempJarak < jarak){
-                            jarak = tempJarak;
-                            allWorm = curWorm;
-                            
-    
+                        //tempJarak = euclideanDistance(curWorm.position.x, curWorm.position.y, tempEnemy.position.x, tempEnemy.position.y);
+                        if(curWorm.id == 2 || curWorm.id == 3) allWorm = curWorm;
+                        else {
+                            tempHP = curWorm.health;
+                            if(tempHP < MineHP){
+                                MineHP = tempHP;
+                                allWorm = curWorm;
                         }
+                    }
                     }
                 }
             }
@@ -113,7 +117,7 @@ public class Bot {
         }
 
         // Run case tergantung jenis worm
-        else if(currentWorm.id == 1){  // Commando
+        if(currentWorm.id == 1){  // Commando
             enemyWorm = getFirstWormInRange(currentWorm);
             if (enemyWorm != null) {
                 direction = resolveDirection(currentWorm.position, enemyWorm.position);
@@ -403,7 +407,6 @@ public class Bot {
     
     private Cell getCell(MyWorm thisWorm){ // get Cell dideket worm , not random. Berdasarkan poin (dig dirt didahulukan dibanding move)
         List<Cell> surroundingBlocks;
-        int cellIdx;
         Cell block;
         int countE = 0;
         int countF = 0;
@@ -426,12 +429,12 @@ public class Bot {
         for (int k = 0; k < surroundingBlocks.size(); k++) {
             block = surroundingBlocks.get(k);
             if (block.type == CellType.AIR){
-                for (int j = 0; j < enemyPos.size(); j++) {
+                for (int j = 0; j < enemyPos.size(); j++) { // Validator biar ga move ke cell yg ada musuh
                     if(block.x != enemyPos.get(j).x && block.y != enemyPos.get(j).y){
                         countE++; // mayat msh kehitung            
                     }
                 }
-                for (int l = 0; l < friendPos.size(); l++) {
+                for (int l = 0; l < friendPos.size(); l++) { // Validator biar ga move ke cell yg ada teman
                     if(block.x != friendPos.get(l).x && block.y != friendPos.get(l).y){
                         countF++;
                     }                    
