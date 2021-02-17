@@ -1,0 +1,89 @@
+function run() → Command {mengeluarkan command-command yang kan digunakan pada permainan}
+KAMUS
+    enemyWorm,tempEnemy : Worm
+    direction,direction1,direction2,direction3 : Direction
+    block : Cell
+    tempHP,mineHP : integer
+    allWorm,curWorm : MyWorm
+    
+ALGORITMA
+    if(currPlayer.remainingWormSelections > 0) then {Buat Select worm yang lagi di range enemy, dari worm kita yang punya health paling kecil}
+        enemyWorm <- getFirstWormInRange(currentWorm)
+        for(curWorm in currPlayer.worms) {iterasi currPlayer.worms menggunakan temporary variable currWorm}
+            if(currWorm.health > 0 and curWorm != currentWorm) then
+                tempEnemy <- getFirstWormInRange(curWorm)
+                if(tempEnemy!=null) then
+                    if(curWorm.id = 2 or currWorm.id = 3) then {prioritaskan yang bisa throw banana/snowball}
+                        allWorm <- curWorm
+                    else {prioritas selanjutnya sesuai health worm pemain terkecil}
+                        tempHp <- curWorm.health
+                        if(tempHp < MineHp) then
+                            MineHP <- tempHP
+                            allWorm <- curWorm
+
+        if(allWorm != null) then
+            if(allWorm.id = 3) then
+                enemyWorm <- getFirstWormInSnowballRange(allWorm)
+                if(enemyWorm!=null and allWorm.snowballs.count > 0) then
+                    -> SelectCommand(3, "snowball", enemyWorm.position.x, enemyWorm.position.y, Direction.NE)
+                
+                enemyWorm <- getFirstWormInRange(allWorm)
+                if(enemyWorm!=null) then
+                    direction3 <- resolveDirection(allWorm.position, enemyWorm.position)
+                    -> SelectCommand(3, "shoot", enemyWorm.position.x, enemyWorm.position.y, direction3)
+            else if(allWorm.id = 2) then
+                enemyWorm <- getFirstWormInBananaRange(allWorm)
+                if (enemyWorm != null and allWorm.bananaBombs.count > 0) then {Kalo musuh di range banana bomb dan count bomb > 0 berarti do command bananabomb}
+                    -> SelectCommand(2, "banana", enemyWorm.position.x, enemyWorm.position.y, Direction.NE)
+                
+                enemyWorm <- getFirstWormInRange(allWorm)
+                if (enemyWorm != null) then {  // Musuh di range shoot general weapon}
+                    direction2 <- resolveDirection(allWorm.position, enemyWorm.position)
+                    -> SelectCommand(2, "shoot", enemyWorm.position.x, enemyWorm.position.y, direction2)
+            
+            else if(allWorm.id = 1) then
+                enemyWorm <- getFirstWormInRange(allWorm);
+                if (enemyWorm != null) then
+                    direction1 <- resolveDirection(allWorm.position, enemyWorm.position)
+                    -> SelectCommand(1, "shoot", enemyWorm.position.x, enemyWorm.position.y, direction1)
+                
+    
+    // Run case tergantung jenis worm
+    if(currentWorm.id = 1) then {  Commando }
+        enemyWorm <- getFirstWormInRange(currentWorm)
+        if (enemyWorm != null) then {
+            direction <- resolveDirection(currentWorm.position, enemyWorm.position)
+            -> ShootCommand(direction)
+            
+    else if(currentWorm.id = 2) then { //Agent
+        enemyWorm <- getFirstWormInBananaRange(currentWorm)
+        if (enemyWorm != null and currentWorm.bananaBombs.count > 0) then{ // Kalo musuh di range banana bomb dan count bomb > 0 berarti do command bananabomb}
+            -> BananaCommand(enemyWorm.position.x,enemyWorm.position.y)
+        enemyWorm <- getFirstWormInRange(currentWorm);
+        if (enemyWorm != null) then {  // Musuh di range shoot general weapon }
+            direction <- resolveDirection(currentWorm.position, enemyWorm.position)
+            -> ShootCommand(direction)
+    
+    else if(currentWorm.id = 3) then{ // Technologist
+        enemyWorm <- getFirstWormInSnowballRange(currentWorm);
+        if (enemyWorm != null and currentWorm.snowballs.count > 0 && enemyWorm.roundsUntilUnfrozen == 0) then { Kalo musuh di range snowballsb dan count snowballs > 0 berarti do command snowballs }
+            -> SnowballCommand(enemyWorm.position.x,enemyWorm.position.y)
+
+        enemyWorm <- getFirstWormInRange(currentWorm);
+            if (enemyWorm != null) then {  // Musuh di range shoot general weapon
+                direction <- resolveDirection(currentWorm.position, enemyWorm.position);
+                -> ShootCommand(direction);
+
+    block <- getCell(currentWorm) // Get block cell yang ada disekitar pemain
+    if(block!=null){
+        if (block.type = CellType.DIRT) then {  // Kalo dirt berarti didestroy }
+            -> DigCommand(block.x, block.y)    
+        else if (block.type = CellType.AIR) then {  // Kalo block air maka move kesana }
+            -> MoveCommand(block.x, block.y)
+
+
+    -> DoNothingCommand()
+            
+    
+
+            

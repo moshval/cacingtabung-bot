@@ -1,0 +1,198 @@
+DEKLARASI TIPE DATA
+    Worm : [id, health, position, diggingRange, movementRange, roundsUntilUnfrozen]
+    MyWorm : [weapon, bananaBombs, snowballs]
+    opponent : [id, score, worms]
+
+function getFirstWormInRange(thisWorm : MyWorm) → MyWorm
+{Cek Ada nearby enemy worm dalam range basic attack, mereturn detail worm enemy}
+KAMUS LOKAL
+        opponent,enemyworm : Worm
+        cells : array of string
+        arrWorm,tempWorm : array of Worm
+        enemyPosition : string
+ALGORITMA
+        cells ← constructFireDirectionLines(thisWorm,thisWorm.weapon.range) 
+        for (enemyWorm in opponent) 
+            if(enemyWorm.health > 0) then
+                enemyPosition ← (enemyWorm.position.x, enemyWorm.position.y)
+                if (cells = enemyPosition)) {
+                    add enemyWorm to arrWorm
+        { Sorting by enemy health, cari minimum health enemy dari array yang dibentuk sblmnya}      
+        if (arrWorm.size > 0) then
+            tempWorm = arrWorm[0];
+            for i ← 1 to arrWorm.size do 
+                if(arrWorm[i].health < tempWorm.health) then 
+                    tempWorm = arrWorm[i]
+            → tempWorm;
+        }
+        else 
+            → null;
+                
+
+
+
+
+
+function euclideanDistance (aX : integer, aY : integer, bX : integer, bY : integer) → integer
+{Mengembalikan nilai hasil kalkulasi berupa Distance/jarak dari 2 buah titik (X,Y) (euclidean)}
+ALGORITMA
+    → sqrt(pow(aX - bX, 2) + pow(aY - bY, 2))
+
+function getFirstWormInSnowballRange (thisworm : MyWorm) → Worm
+{Cek Ada nearby enemy worm dalam snowball throwing range, mereturn detail worm enemy}
+KAMUS LOKAL
+    distance : integer
+ALGORITMA
+    for (enemyWorm in opponent)
+        if (enemyWorm.health > 0) 
+            distance ← euclideanDistance (thisWorm.position.x, thisWorm.position.y, enemyWorm.position.x, enemyWorm.position.y)
+            if (distance <= thisWorm.snowballs.range and distance > thisWorm.snowballs.freezeRadius*.sqrt(2))
+                → enemyWorm
+    → null
+    
+
+function getFirstWormInSnowballRange (thisworm : MyWorm) → Worm
+{Cek Ada nearby enemy worm dalam banana throwing range, mereturn detail worm enemy}
+KAMUS LOKAL
+    distance : integer
+ALGORITMA
+    for (enemyWorm in opponent)
+        if (enemyWorm.health > 0) 
+            distance ← euclideanDistance (thisWorm.position.x, thisWorm.position.y, enemyWorm.position.x, enemyWorm.position.y)
+            if (distance <= thisWorm.bananaBombs.range and distance > thisWorm.bananaBombs.damageRadius*0.75)
+                → enemyWorm
+    → null
+    
+
+function getEnemyPosition () → array of Position
+{Mendapatkan posisi semua musuh dan mengembalikan dalam bentuk arraylist}
+KAMUS LOKAL
+    ArrayList : array of Position
+    i : integer
+ALGORITMA
+    i ← 0
+    for (enemyWorm in opponent)
+        ArrayList[i] ← enemyWorm.position
+        i ← i + 1
+    → ArrayList
+
+function getFriendPosition () → array of Position
+{Mendapatkan posisi semua teman worms dan mengembalikan dalam bentuk arraylist}
+KAMUS LOKAL
+    ArrayList : array of Position
+    i : integer
+ALGORITMA
+    i ← 0
+    for (myWorm in currPlayer)
+        ArrayList[i] ← myWorm.position
+        i ← i + 1
+    → ArrayList
+
+function getSurroundingCells (x : integer, y : integer)  → array of Cell
+{Buat array of cell2 apa aja yg ada disekitar, dari info gamestate. Bakal dipakai buat nentuin jenis cell disekitar (di method run)}
+KAMUS LOKAL
+    cells : array of Cell
+    i,j : integer
+    p,q : integer
+    distance1, distance2 : integer
+ALGORITMA
+    i ← x - 1
+    j ← y - 1
+    i traversal x + 1
+        i traversal y + 1
+            if (i ≠ x and j ≠ y and isValidCoordinate(i,j)) then
+                cells[gameState.map[j][i]]
+    {Melakuakn Sorting berdasarkan yang paling dekat ke center (16,16)}
+    p traversal cells.size()-1
+        q traversal cells.size()-1
+            distance1 ← euclideanDistance(cells.get(q).x, cells.get(q).y,16,16)
+            distance2 ← euclideanDistance(cells.get(q+1).x, cells.get(q+1).y,16,16)
+            if (distance > distance2) then 
+                Collections.swap(cells, q, q+1)
+    → cells
+
+
+function countEnemyAlive() → integer
+{mendapatkan banyaknya worm musuh yang masih hidup }
+KAMUS LOKAL
+        count : integer
+        opponent : Worm
+ALGORITMA
+        count ← 0
+        for enemyWorm in opponent.worms
+            if(enemyWorm.health > 0) then
+                count ← count + 1
+        → count
+
+function countFriendAlive() → integer
+{mendapatkan banyaknya worm player yang masih hidup }
+KAMUS LOKAL
+        count : integer
+        currPlayer : MyWorm
+ALGORITMA
+        count ← 0
+        for myWorm in currPlayer.worms
+            if(myWorm.health > 0) then
+                count ← count + 1
+        → count
+
+
+function constructFireDirectionLines(thisWorm : MyWorm, range : int) → array of array of Cell
+{Shooting line, buat array of direction shooting line dari weapon}
+KAMUS LOKAL
+        directionLines : array of array of Cell
+        directionLines : array of Cell   
+        cell : Cell
+        directionMultiplier,coordinateX,coordinateY : integer    
+ALGORITMA
+        for Direction direction in Direction.values() do
+            for directionMultiplier ← 1 to range do 
+                coordinateX ← thisWorm.position.x + (directionMultiplier * direction.x);
+                coordinateY ← thisWorm.position.y + (directionMultiplier * direction.y);
+
+                if (not isValidCoordinate(coordinateX, coordinateY)) {
+                    break
+                }
+
+                if (euclideanDistance(thisWorm.position.x, thisWorm.position.y, coordinateX, coordinateY) > range) {
+                    break
+                }
+
+                Cell cell ← gameState.map[coordinateY][coordinateX];
+                if (cell.type != CellType.AIR) {
+                    break
+                }
+
+                directionLine.add(cell)  {add ke array directionLine}
+        → directionLines
+
+
+
+function run() → Command {mengeluarkan command-command yang kan digunakan pada permainan}
+KAMUS
+    enemyWorm,tempEnemy : Worm
+    direction,direction1,direction2,direction3 : Direction
+    block : Cell
+    tempHP,mineHP : integer
+    allWorm,curWorm : MyWorm
+    
+ALGORITMA
+    if(currPlayer.remainingWormSelections > 0) then {// Buat Select worm yang lagi di range enemy, dari worm kita yang punya health paling kecil}
+        enemyWorm ← getFirstWormInRange(currentWorm)
+        for(curWorm in currPlayer.worms) {iterasi currPlayer.worms menggunakan temporary variable currWorm}
+            if(currWorm.health > 0 and curWorm != currentWorm) then
+                tempEnemy ← getFirstWormInRange(curWorm)
+                if(tempEnemy!=null) then
+                    if(curWorm.id = 2 or currWorm.id = 3) then
+                        allWorm ← curWorm
+                    else
+                        tempHp ← curWorm.health
+                        if(tempHp < )
+        
+
+        
+
+        
+
+
+

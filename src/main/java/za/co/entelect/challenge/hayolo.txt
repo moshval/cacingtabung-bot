@@ -1,0 +1,94 @@
+private List<List<Cell>> constructFireDirectionLines(MyWorm thisWorm,int range) {
+        List<List<Cell>> directionLines = new ArrayList<>();
+        for (Direction direction : Direction.values()) {
+            List<Cell> directionLine = new ArrayList<>();
+            for (int directionMultiplier = 1; directionMultiplier <= range; directionMultiplier++) {
+
+                int coordinateX = thisWorm.position.x + (directionMultiplier * direction.x);
+                int coordinateY = thisWorm.position.y + (directionMultiplier * direction.y);
+
+                if (!isValidCoordinate(coordinateX, coordinateY)) {
+                    break;
+                }
+
+                if (euclideanDistance(thisWorm.position.x, thisWorm.position.y, coordinateX, coordinateY) > range) {
+                    break;
+                }
+
+                Cell cell = gameState.map[coordinateY][coordinateX];
+                if (cell.type != CellType.AIR) {
+                    break;
+                }
+
+                directionLine.add(cell);
+            }
+            directionLines.add(directionLine); 
+        }
+
+        return directionLines;
+    }
+
+function constructFireDirectionLines(thisWorm : MyWorm, range : int) → array of array of Cell
+        directionLines : array of array of Cell
+        directionLines : array of Cell   
+        cell : Cell
+        directionMultiplier,coordinateX,coordinateY : integer    
+
+        for Direction direction in Direction.values() do
+            for directionMultiplier <- 1 to range do 
+                coordinateX <- thisWorm.position.x + (directionMultiplier * direction.x);
+                coordinateY <- thisWorm.position.y + (directionMultiplier * direction.y);
+
+                if (not isValidCoordinate(coordinateX, coordinateY)) {
+                    break
+                }
+
+                if (euclideanDistance(thisWorm.position.x, thisWorm.position.y, coordinateX, coordinateY) > range) {
+                    break
+                }
+
+                Cell cell <- gameState.map[coordinateY][coordinateX];
+                if (cell.type != CellType.AIR) {
+                    break
+                }
+
+                directionLine.add(cell)  {add ke array directionLine}
+        return directionLines
+
+
+
+private int countEnemyAlive(){
+        int count = 0;
+        for (Worm enemyWorm : opponent.worms) {
+            if(enemyWorm.health > 0) count++;
+        }
+        return count;
+    }
+    // Mengembalikan jumlah worms friends yang masih hidup
+    private int countFriendAlive(){
+        int count = 0;
+        for (MyWorm myWorm : currPlayer.worms) {
+            if(myWorm.health > 0) count++;
+        }
+        return count;
+    }
+
+function countEnemyAlive() → integer
+        count : integer
+        opponent : Worm
+        count <- 0
+        for enemyWorm in opponent.worms
+            if(enemyWorm.health > 0) then
+                count <- count + 1
+        return count
+
+function countFriendAlive() → integer
+        count : integer
+        currPlayer : MyWorm
+        count <- 0
+        for myWorm in currPlayer.worms
+            if(myWorm.health > 0) then
+                count <- count + 1
+        return count
+               
+

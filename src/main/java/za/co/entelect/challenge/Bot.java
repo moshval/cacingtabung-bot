@@ -58,14 +58,14 @@ public class Bot {
         MyWorm allWorm;
         allWorm = null;
         int MineHP = 99999;  
-        // Buat Select worm yang lagi di range enemy, sorted dari worm yang punya health paling kecil
+        // Buat Select worm yang lagi di range enemy, dari worm kita yang punya health paling kecil
         if(currPlayer.remainingWormSelections > 0 ){
             enemyWorm = getFirstWormInRange(currentWorm);
             for (MyWorm curWorm : currPlayer.worms){
                 if(curWorm.health > 0 && curWorm != currentWorm){
                     tempEnemy =  getFirstWormInRange(curWorm);
                     if(tempEnemy!=null){
-                        //tempJarak = euclideanDistance(curWorm.position.x, curWorm.position.y, tempEnemy.position.x, tempEnemy.position.y);
+                        
                         if(curWorm.id == 2 || curWorm.id == 3) allWorm = curWorm;
                         else {
                             tempHP = curWorm.health;
@@ -77,6 +77,7 @@ public class Bot {
                     }
                 }
             }
+            
             if(allWorm!=null){
             if(allWorm.id == 3){
                 enemyWorm = getFirstWormInSnowballRange(allWorm);
@@ -148,13 +149,13 @@ public class Bot {
 
         }
 
-
-        block = getCell(currentWorm);
+         
+        block = getCell(currentWorm); // Get  block cell yang ada disekitar pemain
         if(block!=null){
-            if (block.type == CellType.DIRT) {  // Kalo block air maka move kesana Kalo dirt berarti didestroy
+            if (block.type == CellType.DIRT) {  // Kalo dirt berarti didestroy
                 return new DigCommand(block.x, block.y);
             }      
-            else if (block.type == CellType.AIR) { 
+            else if (block.type == CellType.AIR) {  // Kalo block air maka move kesana 
                 return new MoveCommand(block.x, block.y);
             }
         }
@@ -169,13 +170,13 @@ public class Bot {
     // Cek Ada nearby enemy worm dalam shooting range, mereturn detail worm enemy
     private Worm getFirstWormInRange(MyWorm thisWorm) {
 
-        Set<String> cells = constructFireDirectionLines(thisWorm,thisWorm.weapon.range)
+        Set<String> cells = constructFireDirectionLines(thisWorm,thisWorm.weapon.range) // Generate Set of shooting line (direction)
                 .stream()
                 .flatMap(Collection::stream)
                 .map(cell -> String.format("%d_%d", cell.x, cell.y))
                 .collect(Collectors.toSet());
 
-        ArrayList<Worm> arrWorm = new ArrayList<Worm>();
+        ArrayList<Worm> arrWorm = new ArrayList<Worm>(); // Array yang isinya enemy worm yang bakal memenuhi kondisi dibawah
         for (Worm enemyWorm : opponent.worms) {
             if(enemyWorm.health > 0){
                 String enemyPosition = String.format("%d_%d", enemyWorm.position.x, enemyWorm.position.y);
@@ -184,7 +185,7 @@ public class Bot {
                 }
             }
         }
-        if(arrWorm.size() > 0){
+        if(arrWorm.size() > 0){ // Sorting by enemy health, cari minimum health enemy dari array yang dibentuk sblmnya
             Worm tempWorm = arrWorm.get(0);
             for (int i = 1; i < arrWorm.size(); i++) {
                 if(arrWorm.get(i).health < tempWorm.health) tempWorm = arrWorm.get(i);
@@ -195,7 +196,7 @@ public class Bot {
         else return null;
     }
 
-    // Shooting line, nentuin direction shooting line dari weapon
+    // Shooting line, buat array of direction shooting line dari weapon
     private List<List<Cell>> constructFireDirectionLines(MyWorm thisWorm,int range) {
         List<List<Cell>> directionLines = new ArrayList<>();
         for (Direction direction : Direction.values()) {
@@ -396,5 +397,5 @@ public class Bot {
 
 
 
-}
 
+}
