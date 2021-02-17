@@ -226,7 +226,7 @@ public class Bot {
     }
 
     // Buat array of cell2 apa aja yg ada disekitar, dari info gamestate. Bakal dipakai buat nentuin jenis cell disekitar (di method run)
-    private List<Cell> getSurroundingCells(int x, int y) {
+    /*private List<Cell> getSurroundingCells(int x, int y) {
         ArrayList<Cell> cells = new ArrayList<>();
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
@@ -239,7 +239,7 @@ public class Bot {
 
 
         return cells;
-    }
+    }*/
 
     // Calculate Distance (euclidean)
     private int euclideanDistance(int aX, int aY, int bX, int bY) {
@@ -537,7 +537,30 @@ public class Bot {
 
     // }
 
-
+    // Buat array of cell2 apa aja yg ada disekitar, dari info gamestate. Bakal dipakai buat nentuin jenis cell disekitar (di method run)
+    private List<Cell> getSurroundingCells(int x, int y) {
+        ArrayList<Cell> cells = new ArrayList<>();
+        for (int i = x - 1; i <= x + 1; i++) {
+            for (int j = y - 1; j <= y + 1; j++) {
+                // Gak include current position
+                if (i != x && j != y && isValidCoordinate(i, j)) {
+                    cells.add(gameState.map[j][i]);
+                }
+            }
+        }
+        // Sorting berdasarkan yang paling deket ke center (16,16)
+        int distance1,distance2;
+        for (int p = 0; p < cells.size() - 1; p++) {
+            for (int q = 0; q < cells.size()-p-1; q++) {
+                distance1 = euclideanDistance(cells.get(q).x, cells.get(q).y,16,16);
+                distance2 = euclideanDistance(cells.get(q+1).x, cells.get(q+1).y,16,16);
+                if(distance1 > distance2){
+                    Collections.swap(cells, q, q+1);
+                }
+            }
+        }
+        return cells;
+    }
 
 
 
