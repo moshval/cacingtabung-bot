@@ -53,11 +53,8 @@ public class Bot {
         
         Worm enemyWorm,tempEnemy;
         Direction direction, direction1,direction2,direction3;
-        List<Cell> surroundingBlocks;
-        int cellIdx;
         Cell block;
-        int tempJarak,tempHP;
-        int jarak = 99999;
+        int tempHP;
         MyWorm allWorm;
         allWorm = null;
         int MineHP = 99999;  
@@ -229,21 +226,6 @@ public class Bot {
         return directionLines;
     }
 
-    // Buat array of cell2 apa aja yg ada disekitar, dari info gamestate. Bakal dipakai buat nentuin jenis cell disekitar (di method run)
-    /*private List<Cell> getSurroundingCells(int x, int y) {
-        ArrayList<Cell> cells = new ArrayList<>();
-        for (int i = x - 1; i <= x + 1; i++) {
-            for (int j = y - 1; j <= y + 1; j++) {
-                // Gak include current position
-                if (i != x && j != y && isValidCoordinate(i, j)) {
-                    cells.add(gameState.map[j][i]);
-                }
-            }
-        }
-
-
-        return cells;
-    }*/
 
     // Calculate Distance (euclidean)
     private int euclideanDistance(int aX, int aY, int bX, int bY) {
@@ -306,104 +288,7 @@ public class Bot {
 
         return null;
     }
-    
-
-
-    /* Strategi : cari worm musuh yg dapat diserang semua worm yang player miliki */
-    // private Command greedyByEnemyLocation(){
-    //     Worm enemyWorm;
-    //     Direction direction;
-    //     List<Cell> surroundingBlocks;
-    //     int cellIdx;
-    //     Cell block;
-    //     Direction direction1,direction2,direction3;
-    //     boolean found3 = false;
-    //     boolean found2 = false;
-    //     for (MyWorm allWorm : currPlayer.wo  rms){
-    //         if(allWorm.health > 0 && allWorm != currentWorm){
-    //             if(allWorm.id == 3){
-    //                 enemyWorm = getFirstWormInSnowballRange(allWorm);
-    //                 if (enemyWorm != null && allWorm.snowballs.count > 0 && enemyWorm.roundsUntilUnfrozen == 0) { // Kalo musuh di range snowballsb dan count snowballs > 0 berarti do command snowballs
-    //                     found3 = true;
-    //                     return new SelectCommand(3, "snowball", enemyWorm.position.x, enemyWorm.position.y, Direction.NE);
-    //                     // SelectCommand(int id, String cmd,int x,int y,Direction direction)
-    //                 }
-    //                 enemyWorm = getFirstWormInRange(allWorm);
-    //                 if (enemyWorm != null) {  // Musuh di range shoot general weapon
-    //                     direction3 = resolveDirection(allWorm.position, enemyWorm.position);
-
-    //                 }                  
-    //             }
-    //             else if(allWorm.id == 2){
-    //                 enemyWorm = getFirstWormInBananaRange(allWorm);
-    //                 if (enemyWorm != null && allWorm.bananaBombs.count > 0) { // Kalo musuh di range banana bomb dan count bomb > 0 berarti do command bananabomb
-    //                     found2 = true;
-    //                 }
-    //                 enemyWorm = getFirstWormInRange(allWorm); 
-    //                 if (enemyWorm != null) {  // Musuh di range shoot general weapon
-    //                     direction2 = resolveDirection(allWorm.position, enemyWorm.position);
-                    
-    //                 }
-    //             }
-    //             else if(allWorm.id == 1){
-    //                 enemyWorm = getFirstWormInRange(allWorm);
-    //                 if (enemyWorm != null) {
-    //                     direction1 = resolveDirection(allWorm.position, enemyWorm.position);
-    //                 }
-    //             }
-                
-    //         }
-    //     }
-
-    //     if(!found3 && found2) return new SelectCommand(2, "banana", enemyWorm.position.x, enemyWorm.position.y, Direction.NE);
-    //     return null;
-
-
-    // }
-    /*if(currPlayer.remainingWormSelections > 0){
-        Direction direction1,direction2,direction3;
-        boolean found3 = false;
-        boolean found2 = false;
-        enemyWorm = getFirstWormInRange(currentWorm);
-        for (MyWorm allWorm : currPlayer.worms){
-            if(allWorm.health > 0 && allWorm != currentWorm){
-                if(allWorm.id == 3){
-                    enemyWorm = getFirstWormInSnowballRange(allWorm);
-                    if (enemyWorm != null && allWorm.snowballs.count > 0 && enemyWorm.roundsUntilUnfrozen == 0) { // Kalo musuh di range snowballsb dan count snowballs > 0 berarti do command snowballs
-                        found3 = true;
-                        return new SelectCommand(3, "snowball", enemyWorm.position.x, enemyWorm.position.y, Direction.NE);
-                        // SelectCommand(int id, String cmd,int x,int y,Direction direction)
-                    }
-                    enemyWorm = getFirstWormInRange(allWorm);
-                    if (enemyWorm != null) {  // Musuh di range shoot general weapon
-                        direction3 = resolveDirection(allWorm.position, enemyWorm.position);
-
-                    }                  
-                }
-                else if(allWorm.id == 2){
-                    enemyWorm = getFirstWormInBananaRange(allWorm);
-                    if (enemyWorm != null && allWorm.bananaBombs.count > 0) { // Kalo musuh di range banana bomb dan count bomb > 0 berarti do command bananabomb
-                        found2 = true;
-                    }
-                    enemyWorm = getFirstWormInRange(allWorm); 
-                    if (enemyWorm != null) {  // Musuh di range shoot general weapon
-                        direction2 = resolveDirection(allWorm.position, enemyWorm.position);
-                    
-                    }
-                }
-                else if(allWorm.id == 1){
-                    enemyWorm = getFirstWormInRange(allWorm);
-                    if (enemyWorm != null) {
-                        direction1 = resolveDirection(allWorm.position, enemyWorm.position);
-                    }
-                }
-                
-            }
-        }
-
-        if(!found3 && found2) return new SelectCommand(2, "banana", enemyWorm.position.x, enemyWorm.position.y, Direction.NE);
-    }*/
-    
+        
     
     private Cell getCell(MyWorm thisWorm){ // get Cell dideket worm , not random. Berdasarkan poin (dig dirt didahulukan dibanding move)
         List<Cell> surroundingBlocks;
@@ -482,63 +367,7 @@ public class Bot {
         return count;
     }
 
-    // /*private Asal(){
-    //     Worm enemyWorm,tempEnemy;
-    //     Direction direction, direction1,direction2,direction3;
-    //     List<Cell> surroundingBlocks;
-    //     int cellIdx;
-    //     Cell block;
-    //     int tempJarak;
-    //     int jarak = 99999;
 
-    //     if(currPlayer.remainingWormSelections > 0 ){
-    //         enemyWorm = getFirstWormInRange(currentWorm);
-    //         for (MyWorm allWorm : currPlayer.worms){
-    //             if(allWorm.health > 0 && allWorm != currentWorm){
-    //                 tempEnemy =  getFirstWormInRange(allWorm);
-    //                 if(tempEnemy!=null){
-    //                     tempJarak = euclideanDistance(allWorm.position.x, allWorm.position.y, tempEnemy.position.x, tempEnemy.position.y);
-    //                     if(tempJarak < jarak){
-    //                         jarak = tempJarak;
-    //                         enemyWorm = tempEnemy;
-    
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //         if(allWorm.id == 3){
-    //             enemyWorm = getFirstWormInSnowballRange(allWorm);
-    //             if (enemyWorm != null && allWorm.snowballs.count > 0 /*&& enemyWorm.roundsUntilUnfrozen == 0*/) { // Kalo musuh di range snowballsb dan count snowballs > 0 berarti do command snowballs
-    //                 return new SelectCommand(3, "snowball", enemyWorm.position.x, enemyWorm.position.y, Direction.NE);
-    //                 // SelectCommand(int id, String cmd,int x,int y,Direction direction)
-    //             }
-    //             if (enemyWorm != null) {  // Musuh di range shoot general weapon
-    //                 direction3 = resolveDirection(allWorm.position, enemyWorm.position);
-    //                 return new SelectCommand(3, "shoot", enemyWorm.position.x, enemyWorm.position.y, direction3);
-    //             }                  
-    //         }
-    //         else if(allWorm.id == 2){
-    //             enemyWorm = getFirstWormInBananaRange(allWorm);
-    //             if (enemyWorm != null && allWorm.bananaBombs.count > 0) { // Kalo musuh di range banana bomb dan count bomb > 0 berarti do command bananabomb
-    //                 return new SelectCommand(2, "banana", enemyWorm.position.x, enemyWorm.position.y, Direction.NE);
-    //             }
-    //             if (enemyWorm != null) {  // Musuh di range shoot general weapon
-    //                 direction2 = resolveDirection(allWorm.position, enemyWorm.position);
-    //                 return new SelectCommand(2, "shoot", enemyWorm.position.x, enemyWorm.position.y, direction2);
-    //             }
-    //         }
-    //         else if(allWorm.id == 1){
-    //             if (enemyWorm != null) {
-    //                 direction1 = resolveDirection(allWorm.position, enemyWorm.position);
-    //                 return new SelectCommand(1, "shoot", enemyWorm.position.x, enemyWorm.position.y, direction1);
-    //             }
-    //         }
-                
-            
-    //     }
-        
-
-    // }
 
     // Buat array of cell2 apa aja yg ada disekitar, dari info gamestate. Bakal dipakai buat nentuin jenis cell disekitar (di method run)
     private List<Cell> getSurroundingCells(int x, int y) {
