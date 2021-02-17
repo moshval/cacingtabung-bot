@@ -2,6 +2,7 @@ DEKLARASI TIPE DATA
     Worm : [id, health, position, diggingRange, movementRange, roundsUntilUnfrozen]
     MyWorm : [weapon, bananaBombs, snowballs]
     opponent : [id, score, worms]
+    
 
 function getFirstWormInRange(thisWorm : MyWorm) → MyWorm
 {Cek Ada nearby enemy worm dalam range basic attack, mereturn detail worm enemy}
