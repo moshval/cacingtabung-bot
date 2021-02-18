@@ -52,7 +52,7 @@ ALGORITMA
     → null
     
 
-function getFirstWormInSnowballRange (thisworm : MyWorm) → Worm
+function getFirstWormInBananaRange (thisworm : MyWorm) → Worm
 {Cek Ada nearby enemy worm dalam banana throwing range, mereturn detail worm enemy}
 KAMUS LOKAL
     distance : integer
@@ -189,11 +189,139 @@ ALGORITMA
                     else
                         tempHp ← curWorm.health
                         if(tempHp < )
+
+
+function isValidCoordinate(x : integer, y : integer) → boolean
+{Melakukan pengecekan validity koordinat }
+KAMUS LOKAL
+
+ALGORITMA
+        → x >= 0 and x < gameState.mapSize and y >= 0 and y < gameState.mapSize
         
+// Converter Posisi antara 2 koordinat menjadi suatu arah (mata angin) , useful buat nentuin shooting direction buat weapon
+    private Direction resolveDirection(Position a, Position b) {
+        StringBuilder builder = new StringBuilder();
 
-        
+        int verticalComponent = b.y - a.y;
+        int horizontalComponent = b.x - a.x;
 
-        
+        if (verticalComponent < 0) {
+            builder.append('N');
+        } else if (verticalComponent > 0) {
+            builder.append('S');
+        }
+
+        if (horizontalComponent < 0) {
+            builder.append('W');
+        } else if (horizontalComponent > 0) {
+            builder.append('E');
+        }
+
+        return Direction.valueOf(builder.toString());
+    }
+
+function resolveDirection(a : Position, b : Position) → Direction
+{ Converter Posisi antara 2 koordinat menjadi suatu arah (mata angin)}
+KAMUS LOKAL
+       builder : StringBuilder
+       finalString : string
+       verticalComponent,horizontalComponent : integer
+ALGORITMA
+
+        verticalComponent ← b.y - a.y
+        horizontalComponent ← b.x - a.x
+
+        {membentuk direction arah mata angin}
+        if (verticalComponent < 0) then
+            builder.append('N')
+        else if (verticalComponent > 0)
+            builder.append('S')
+
+        if (horizontalComponent < 0) then
+            builder.append('W')
+        else if (horizontalComponent > 0)
+            builder.append('E')
+
+        finalString ← casting builder to string
+        → Direction.valueOf(finalString)
+
+private Cell getCell(MyWorm thisWorm){ // get Cell dideket worm , not random. Berdasarkan poin (dig dirt didahulukan dibanding move)
+        List<Cell> surroundingBlocks;
+        Cell block;
+        int countE = 0;
+        int countF = 0;
+        int countEAlive = countEnemyAlive();
+        int CountFAlive = countFriendAlive();
+        ArrayList<Position> enemyPos = new ArrayList<Position>();
+        ArrayList<Position> friendPos = new ArrayList<Position>();
+        enemyPos = getEnemyPosition();
+        friendPos = getFriendPosition();
+        // enemyPos.get(i)= (x,y)
+        surroundingBlocks = getSurroundingCells(thisWorm.position.x, thisWorm.position.y);
+        //cellIdx = random.nextInt(surroundingBlocks.size()); // Move nya masih random
+        //block = surroundingBlocks.get(cellIdx);
+        for (int i = 0; i < surroundingBlocks.size(); i++) {
+            block = surroundingBlocks.get(i);
+            if(block.type == CellType.DIRT){
+                return block;
+            }
+        }
+        for (int k = 0; k < surroundingBlocks.size(); k++) {
+            block = surroundingBlocks.get(k);
+            if (block.type == CellType.AIR){
+                for (int j = 0; j < enemyPos.size(); j++) { // Validator biar ga move ke cell yg ada musuh
+                    if(block.x != enemyPos.get(j).x && block.y != enemyPos.get(j).y){
+                        countE++; // mayat msh kehitung
+                    }
+                }
+                for (int l = 0; l < friendPos.size(); l++) { // Validator biar ga move ke cell yg ada teman
+                    if(block.x != friendPos.get(l).x && block.y != friendPos.get(l).y){
+                        countF++;
+                    }
+                }
+                if(countE >= countEAlive && countF >= CountFAlive) {
+                    return block;
+                }
+            }
+        }
+            return null;
+        }
+
+function getCell(thisWorm : MyWorm) → Cell
+{ get Cell di dekat worm (tdk random). Berdasarkan poin (dirt didahulukan dibanding air)}
+KAMUS LOKAL
+       surroundingBlocks : array of Cell
+       block : Cell
+       countE, countF, countEAlive, countFAlive, i, j, k: integer
+       enemyPos, friendPos : array of position
+ALGORITMA
+
+       countE ← 0
+       countF ← 0
+       countEAlive ← countEnemyAlive()
+       CountFAlive ← countFriendAlive()
+       enemyPos ← getEnemyPosition()
+       friendPos ← getFriendPosition()
+       surroundingBlocks ← getSurroundingCells(thisWorm.position.x, thisWorm.position.y)
+
+       for i = 0 to surroundingBlocks.size() do
+            block ← surroundingBlocks[i]
+            if block.type = CellType.DIRT then
+                → block
+
+       for k = 0 to k < surroundingBlocks.size() do
+            block ← surroundingBlocks[k]
+            if (block.type = CellType.AIR){
+               for j = 0 to j < enemyPos.size() do { Validator biar ga move ke cell yg ada musuh }
+                   if(block.x != enemyPos[j].x && block.y != enemyPos.get[j].y) then
+                       countE++ { worm mati kehitung )
 
 
+               for l = 0; l < friendPos.size() do { Validator biar ga move ke cell yg ada teman }
+                   if(block.x != friendPos[l].x && block.y != friendPos[l].y) then
+                       countF++
 
+
+               if(countE >= countEAlive && countF >= CountFAlive) then
+                   → block;
+       → null

@@ -90,5 +90,6 @@ function countFriendAlive() → integer
             if(myWorm.health > 0) then
                 count <- count + 1
         return count
-               
+
+
 
